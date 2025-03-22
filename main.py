@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
 
+
 class Player:
     def __init__(self, id, attributes=None):
         self.__id = id
@@ -38,7 +39,13 @@ class Board(ABC):
 
     def pop_from_past(self):
         """Function pops newest past state from the stack."""
-        return self.__past_states.pop()
+        if self.__past_states.length() == 0:
+            return False
+        else:
+            return self.__past_states.pop()
+
+    def is_past_stack_non_empty(self) -> bool:
+        return bool(self.__past_states)
 
     def get_player_to_move(self):
         """Function returns player to move."""
@@ -71,7 +78,6 @@ class Board(ABC):
 
 
 class Game:
-
     def __init__(self, board):
         """
         Initializer creates Game object.
@@ -91,14 +97,21 @@ class Game:
         self.__board.change_board(move)
         return self.__board.get_player_to_move()
 
-    def revert(self) -> Player:
+    def can_revert(self) -> bool:
+        """Returns True if one can revert move, False otherwise"""
+        return self.__board.is_past_stack_non_empty()
+
+    def revert(self) -> Player | False:
         """
         Change the board state to previous and return player to move.
 
-        :return: instance of the Player class that has a move.
+        :return: instance of the Player class that has a move or False if no previous previous move.
         """
-        self.__board.set_current_state(self.__board.pop_from_past())
-        return self.__board.get_player_to_move()
+        if self.__board.is_past_stack_non_empty():
+            self.__board.set_current_state(self.__board.pop_from_past())
+            return self.__board.get_player_to_move()
+        else:
+            return False
 
     def is_finished(self) -> tuple[False, None] | tuple[True, Player]:
         """
