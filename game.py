@@ -2,12 +2,13 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from Player import Player
 
+
 class Game:
     def __init__(self, board):
         """
         Initializer creates Game object.
 
-        :param board: inital game board, should be an instance of class which inherits from Board.
+        :param board: initial game board, should be an instance of class, which inherits from Board.
         """
         self._board = board
 
