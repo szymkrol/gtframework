@@ -9,7 +9,7 @@ class Game:
 
         :param board: inital game board, should be an instance of class which inherits from Board.
         """
-        self.__board = board
+        self._board = board
 
     def move(self, move) -> Player:
         """
@@ -18,13 +18,13 @@ class Game:
         :param move: move to play on the board;
         :return: instance of the Player class that has a move.
         """
-        self.__board.append_current_to_past()
-        self.__board.change_board(move)
-        return self.__board.get_player_to_move()
+        self._board.append_current_to_past()
+        self._board.change_board(move)
+        return self._board.get_player_to_move()
 
     def can_revert(self) -> bool:
         """Returns True if one can revert move, False otherwise"""
-        return self.__board.is_past_stack_non_empty()
+        return self._board.is_past_stack_non_empty()
 
     def revert(self) -> Player | False:
         """
@@ -32,9 +32,9 @@ class Game:
 
         :return: instance of the Player class that has a move or False if no previous previous move.
         """
-        if self.__board.is_past_stack_non_empty():
-            self.__board.set_current_state(self.__board.pop_from_past())
-            return self.__board.get_player_to_move()
+        if self._board.is_past_stack_non_empty():
+            self._board.set_current_state(self._board.pop_from_past())
+            return self._board.get_player_to_move()
         else:
             return False
 
@@ -46,17 +46,17 @@ class Game:
         :return: tuple with first element being a boolean value whether the game has ended and the second is
                  the player to have lost (if game not finished the player is None).
         """
-        is_victory, winner = self.__board.is_there_a_victory()
-        if self.__board.get_available_moves() and not is_victory:
+        is_victory, winner = self._board.is_there_a_victory()
+        if self._board.get_available_moves() and not is_victory:
             return False, None
         else:
             if is_victory:
                 return True, winner
             else:
-                return True, self.__board.get_player_to_move()
+                return True, self._board.get_player_to_move()
 
     def get_current_player(self):
-        return self.__board.get_player_to_move()
+        return self._board.get_player_to_move()
 
     def get_board_state(self):
-        return self.__board.get_current_state()["board_state"]
+        return self._board.get_current_state()["board_state"]
