@@ -1,5 +1,7 @@
-from main import *
-
+from Player import Player
+from Board import Board
+from game import Game
+from Engine import Engine
 
 class TicBoard(Board):
     def generate_empty_board(self):
