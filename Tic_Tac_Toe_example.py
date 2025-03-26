@@ -1,7 +1,8 @@
 from Player import Player
 from Board import Board
-from game import Game
+from Game import Game
 from Engine import Engine
+
 
 class TicBoard(Board):
     def generate_empty_board(self):
@@ -60,9 +61,6 @@ while not my_game.is_finished()[0]:
     i = int(input())
     j = int(input())
     my_game.move((i, j))
-
-
-
 
 # print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
 # board = my_game.get_board_state()

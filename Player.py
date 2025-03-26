@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from copy import deepcopy
 
 class Player:
     def __init__(self, id, attributes=None):
@@ -12,4 +11,3 @@ class Player:
 
     def get_attributes(self):
         return self.__attributes
-
