@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from copy import deepcopy
 from Player import Player
 
 
@@ -28,7 +27,7 @@ class Game:
         """Returns True if one can revert move, False otherwise"""
         return self._board.is_past_stack_non_empty()
 
-    def revert(self) -> Player | False:
+    def revert(self) -> Player | bool:
         """
         Change the board state to previous and return player to move.
 
