@@ -4,13 +4,14 @@ from Player import Player
 
 
 class Game:
-    def __init__(self, board):
+    def __init__(self, board,first_player: Player, second_player: Player):
         """
         Initializer creates Game object.
 
         :param board: initial game board, should be an instance of class, which inherits from Board.
         """
         self._board = board
+        self._players = [first_player, second_player]
 
     def move(self, move) -> Player:
         """
