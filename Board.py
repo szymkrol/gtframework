@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from Player import Player
 
+
 class Board(ABC):
     def __init__(self, first_player: Player, second_player: Player, attributes=None):
         self._current_state = {"board_state": self.generate_empty_board(), "player_to_move": first_player}
