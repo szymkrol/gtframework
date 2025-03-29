@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 
 class Player:
     def __init__(self, id, attributes=None):
-        self.__id = id
+        self._id = id
         # Optional attributes
-        self.__attributes = attributes
+        self._attributes = attributes
 
     def get_id(self):
-        return self.__id
+        return self._id
 
     def get_attributes(self):
-        return self.__attributes
+        return self._attributes

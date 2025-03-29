@@ -63,3 +63,6 @@ class Game:
 
     def get_available_moves(self):
         return self._board.get_available_moves()
+
+    def get_semi_copy(self):
+        return Game(self._board.get_semi_copy())
