@@ -43,13 +43,10 @@ class Board(ABC):
         return {"board_state": deepcopy(state["board_state"]), "player_to_move": state["player_to_move"]}
 
     def get_semi_copy(self):
-        """Function returns a copy with a reference to the same players, but different board state and past_states"""
-        new_board = Board(self._players[0], self._players[1], attributes=deepcopy(self._attributes))
+        """Returns a copy with a reference to the same players, but different board state and past_states."""
+        new_board = self.__class__(self._players[0], self._players[1], attributes=deepcopy(self._attributes))
         new_board._current_state = self._semi_copy_state(self._current_state)
-        new_past_states = []
-        for state in self._past_states:
-            new_past_states.append(self._semi_copy_state(state))
-        new_board._past_states = new_past_states
+        new_board._past_states = [self._semi_copy_state(state) for state in self._past_states]
         return new_board
 
     @abstractmethod

@@ -21,9 +21,9 @@ class Mcts(Engine):
         self._time_limit = time_limit
         self._const = const
 
-    def run(self, game: Game) -> bool:
+    def run(self, game: Game):
         move = self.mcts(game)
-        Engine.run(game, move)
+        Engine.run(self, game, move)
 
     def mcts(self, game: Game):
         """
@@ -34,13 +34,15 @@ class Mcts(Engine):
         tree = GameTree(TreeNode(exploration_const=self._const), game)
         i = 0
         t_end = time.time() + self._time_limit
+
+        # Doing MCTS within constraints
         while i < self._iter_limit and time.time() < t_end:
             self._single_mcts(tree)
             i += 1
 
         # Find best node
         children = tree.get_root().get_children()
-        children.sort(key=lambda node: node.get_num_sims(), reversed=True)
+        children.sort(key=lambda node: node.get_num_sims(), reverse=True)
         best_node = children[0]
         return best_node.get_move_from_parent()
 
@@ -56,6 +58,8 @@ class Mcts(Engine):
         current_node = tree.get_root()
         current_game = tree.get_root_game_copy()
         first_player = current_game.get_current_player()
+
+        # Finding the most promising leaf
         while current_node.get_children():
             current_node = current_node.get_max_UCB_child()
             current_game.move(current_node.get_move_from_parent())
@@ -85,7 +89,7 @@ class Mcts(Engine):
             current_node.increment_num_sims()
             if is_win:
                 current_node.increment_num_wins()
-                current_node = current_node.get_parent()
+            current_node = current_node.get_parent()
         # Root update
         current_node.increment_num_sims()
         if is_win:

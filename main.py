@@ -39,7 +39,7 @@ class Board(ABC):
 
     def pop_from_past(self):
         """Function pops newest past state from the stack."""
-        if self.__past_states.length() == 0:
+        if len(self.__past_states) == 0:
             return False
         else:
             return self.__past_states.pop()
