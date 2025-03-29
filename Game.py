@@ -3,13 +3,18 @@ from Player import Player
 
 
 class Game:
-    def __init__(self, board,first_player: Player, second_player: Player):
+    def __init__(self, board, first_player=None, second_player=None):
         """
         Initializer creates Game object.
 
         :param board: initial game board, should be an instance of class, which inherits from Board.
         """
+
         self._board = board
+        if first_player is None:
+            first_player = self._board.get_players()[0]
+        if second_player is None:
+            second_player = self._board.get_players()[1]
         self._players = [first_player, second_player]
 
     def move(self, move) -> Player:
@@ -66,4 +71,4 @@ class Game:
         return self._board.get_available_moves()
 
     def get_semi_copy(self):
-        return Game(self._board.get_semi_copy())
+        return Game(self._board.get_semi_copy(), self._players[0], self._players[1])
