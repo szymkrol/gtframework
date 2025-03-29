@@ -61,3 +61,9 @@ class Game:
 
     def get_board_state(self):
         return self._board.get_current_state()["board_state"]
+
+    def get_available_moves(self):
+        return self._board.get_available_moves()
+
+    def get_semi_copy(self):
+        return Game(self._board.get_semi_copy())
