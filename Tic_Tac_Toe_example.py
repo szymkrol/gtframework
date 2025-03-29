@@ -67,8 +67,7 @@ while not my_game.is_finished()[0]:
     board = my_game.get_board_state()
     for x in board:
         print(x)
-    move = my_engine.mcts(my_game)
-    my_game.move(move)
+    my_engine.run(my_game)
 # while not my_game.is_finished()[0]:
 #     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
 #     board = my_game.get_board_state()

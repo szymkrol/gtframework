@@ -10,7 +10,7 @@ class Engine:
         :param move: move to be done
         :return: False if move is wrong or game is finished, otherwise True
         """
-        if game.is_finished():
+        if game.is_finished()[0]:
             return False
         if move in game.get_available_moves():
             game.move(move)
