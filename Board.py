@@ -4,10 +4,11 @@ from Player import Player
 
 
 class Board(ABC):
-    def __init__(self, first_player: Player, second_player: Player, attributes=None):
+    def __init__(self, first_player: Player, second_player: Player, attributes=None, turn_part = 0):
         self._current_state = {"board_state": self.generate_empty_board(), "player_to_move": first_player}
         self._past_states = []  # Stack of past states
         self._players = [first_player, second_player]
+        self._turn_part = turn_part
         # Optional attributes
         self._attributes = attributes
 
@@ -48,6 +49,14 @@ class Board(ABC):
         new_board._current_state = self._semi_copy_state(self._current_state)
         new_board._past_states = [self._semi_copy_state(state) for state in self._past_states]
         return new_board
+
+    def _alternate_player(self):
+        """Function changes current player to the other one."""
+        player = self.get_current_state()["player_to_move"]
+        if player == self.get_players()[0]:
+            self.get_current_state()["player_to_move"] = self.get_players()[1]
+        else:
+            self.get_current_state()["player_to_move"] = self.get_players()[0]
 
     @abstractmethod
     def generate_empty_board(self):

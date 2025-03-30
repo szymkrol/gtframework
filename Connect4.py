@@ -10,11 +10,7 @@ class Conn4Board(Board):
         while True:
             if self._current_state["board_state"][i][move] == ' ' and (i > 4 or self._current_state["board_state"][i+1][move] != ' '):
                 self._current_state["board_state"][i][move] = self.get_player_to_move().get_attributes()
-                player = self.get_current_state()["player_to_move"]
-                if player == self.get_players()[0]:
-                    self.get_current_state()["player_to_move"] = self.get_players()[1]
-                else:
-                    self.get_current_state()["player_to_move"] = self.get_players()[0]
+                self._alternate_player()
                 break
             i += 1
 
@@ -55,7 +51,7 @@ class Conn4Board(Board):
         return False, None
 
     def generate_empty_board(self):
-        board = [[' ', ' ', ' ', ' ', ' ', ' ', ' '].copy() for i in range(6)]
+        board = [[' ', ' ', ' ', ' ', ' ', ' ', ' '].copy() for _ in range(6)]
         return board
 
 my_board = Conn4Board(Player(1, 'x'), Player(2, 'o'))

@@ -20,11 +20,8 @@ class TicBoard(Board):
     def change_board(self, move):
         i, j = move
         player = self.get_current_state()["player_to_move"]
-        if player == self.get_players()[0]:
-            self.get_current_state()["player_to_move"] = self.get_players()[1]
-        else:
-            self.get_current_state()["player_to_move"] = self.get_players()[0]
         self.get_current_state()["board_state"][i][j] = player.get_attributes()
+        self._alternate_player()
 
     def is_there_a_victory(self) -> tuple[False, None] | tuple[True, Player]:
         board = self.get_current_state()["board_state"]
@@ -43,7 +40,7 @@ class TicBoard(Board):
             is_finished, symbol = True, board[0][0]
         if board[0][2] == board[1][1] == board[2][0] and board[0][2] != "_":
             is_finished, symbol = True, board[0][2]
-        # No winner yet
+
         if is_finished:
             for player in self.get_players():
                 if player.get_attributes() == symbol:
