@@ -57,6 +57,7 @@ class LatticeNode:
 class Lattice:
     def __init__(self, size):
         self._board = [([None] * size).copy() for _ in range(size)]
+        self._size = size
 
         for i in range(size):
             for j in range(size):
@@ -67,9 +68,9 @@ class Lattice:
                         new_node = LatticeNode((i, j), 'b')
                     else:
                         new_node = LatticeNode((i, j), '_')
-                    neighs = get_neigh_coords((i, j))
+                    neighs = get_neigh_coords((i, j), self._size)
                     for neigh in neighs:
-                        new_node.add_connection(neigh)
+                        new_node.add_connection(self.get_field(neigh))
                     self._board[i][j] = new_node
 
     def get_field(self, coord):
