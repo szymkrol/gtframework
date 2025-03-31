@@ -11,9 +11,10 @@ def get_neigh_coords(coord, size):
 
 
 class LatticeNode:
-    def __init__(self, attr=''):
+    def __init__(self, coords, attr=''):
         self._neighbours = []
         self._attribute = attr
+        self._coords = coords
 
     def get_attribute(self):
         return self._attribute
@@ -27,7 +28,7 @@ class LatticeNode:
     def remove_neighbour(self, neigh):
         self._neighbours.remove(neigh)
 
-    def get_neighours(self):
+    def get_neighbours(self):
         return self._neighbours
 
     def add_connection(self, neigh):
@@ -43,6 +44,14 @@ class LatticeNode:
             return
         neigh.remove_neighbour(self)
         self.remove_neighbour(neigh)
+    def get_coords(self):
+        return self._coords
+
+    def is_closed(self):
+        if len(self._neighbours) == 0:
+            return True
+        else:
+            return False
 
 
 class Lattice:
@@ -55,10 +64,26 @@ class Lattice:
                     self._board[i][j] = None
                 else:
                     if i == 0 or i == size - 1 or j == 0 or j == size - 1:
-                        new_node = LatticeNode('b')
+                        new_node = LatticeNode((i, j), 'b')
                     else:
-                        new_node = LatticeNode('_')
+                        new_node = LatticeNode((i, j), '_')
                     neighs = get_neigh_coords((i, j))
                     for neigh in neighs:
                         new_node.add_connection(neigh)
                     self._board[i][j] = new_node
+
+    def get_field(self, coord):
+        return self._board[coord[0]][coord[1]]
+
+    def get_connections(self, coord):
+        return self.get_field(coord).get_neighbours()
+
+    def get_lower_right_connections(self, coord):
+        conn = self.get_connections(coord)
+        x, y = self.get_field(coord).get_coords()
+        good_neighs = []
+        for neigh in conn:
+            x_n, y_n = neigh.get_coords()
+            if x_n > x or y_n > y:
+                good_neighs.append(neigh)
+        return good_neighs
