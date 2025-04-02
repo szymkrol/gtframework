@@ -16,7 +16,11 @@ class Minmax(Engine):
         self.player2 = player2.get_id()
 
     def run(self, game, move):  # nie za bardzo wiem, jak to uzupełnić
-        pass
+        if self.prun:
+            move = self.minimax(self.player2,game)[0]
+        else:
+            move = self.pruning(self.player2,game)[0]
+        Engine.run(self, game, move)
 
     @abstractmethod
     def evaluate(self):
@@ -24,42 +28,43 @@ class Minmax(Engine):
 
     def minimax(self, player, game: Game, iteration=0) -> (int, int):
         moves = game.get_available_moves()
-        scores = [0 for _ in range(max(moves)+1)]
+        n = len(moves)
+        scores = [0 for _ in range(n)]
         if player == self.player1:
             multiplier = 1
         else:
             multiplier = -1
-        try:
+        if (not game.is_finished()) and n > 0:
             if iteration != self.depth:
-                for i in moves:
-                    game.move(i)
-                    if player == self.player1:
-                        player = self.player2
-                    else:
-                        player = self.player1
-                    value = self.minimax(player, game, iteration+1)
+                for i in range(n):
+                    game.move(moves[i])
+                    player = game.get_current_player()
+                    value = self.minimax(player, game, iteration+1)[1]
                     scores[i] += value
                     game.revert()
             else:
-                for i in moves:
+                for i in range(n):
                     scores[i] += multiplier*self.evaluate()
-        except:
-            for i in moves:
+        else:
+            for i in range(n):
                 scores[i] += multiplier * self.evaluate()
 
         if player == self.player1:
             best_choice_value = -math.inf
-            for i in moves:
+            for i in range(n):
                 if scores[i] > best_choice_value:
                     best_choice_value = scores[i]
         else:
             best_choice_value = math.inf
-            for i in moves:
+            for i in range(n):
                 if scores[i] < best_choice_value:
                     best_choice_value = scores[i]
         choices = []
-        for i in moves:
+        for i in range(n):
             if scores[i] == best_choice_value:
-                choices.append(i)
+                choices.append(moves[i])
         result = random.choice(choices)
         return result, scores[result]
+
+    def pruning(self,player,game,iteration=0,alpha=math.inf,beta= -math.inf):
+        pass
