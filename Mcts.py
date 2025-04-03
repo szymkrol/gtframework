@@ -26,6 +26,7 @@ class Mcts(Engine):
 
     def run(self, game: Game) -> bool:
         move = self.mcts(game)
+        print(move)
         return Engine.run(self, game, move)
 
     def mcts(self, game: Game) -> Any:

@@ -24,7 +24,8 @@ class DotsAndBoxes(Board):
         node_a.remove_connection(node_b)
         score_change = 0
         for node in [node_a, node_b]:
-            if node.is_closed():
+            if node.is_closed() and node.get_attribute() == '_':
+                node.set_attribute('x')
                 if self.get_current_state()["player_to_move"].get_attributes():
                     score_change += 1
                 else:
@@ -62,6 +63,9 @@ class DotsAndBoxes(Board):
         else:
             return False, None
 
+    def __str__(self):
+        return self.get_current_state()["board_state"].__str__()
+
 
 my_board = DotsAndBoxes(Player(1, True), Player(2, False), 5)
 my_game = Game(my_board)
@@ -69,11 +73,15 @@ my_engine = Mcts(500, 10)
 
 while not my_game.is_finished()[0]:
     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
+    print(my_game)
+
     i = int(input())
     j = int(input())
     x = (i, j)
+
     i = int(input())
     j = int(input())
     my_game.move((x, (i, j)))
+    print(my_game)
     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
     my_engine.run(my_game)
