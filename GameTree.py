@@ -1,35 +1,15 @@
 import math
 import typing
-
-
-
-class GameTree:
-    """
-    Class stores game tree.
-
-    Intended to use with MCTS.
-    """
-    def __init__(self, root, root_game):
-        """
-
-        :param root: a root of the tree.
-        :param root_game: a Game object representing game state in root
-        """
-        self._root_game = root_game.get_semi_copy()
-        self._root = root
-
-    def get_root(self):
-        return self._root
-
-    def get_root_game_copy(self):
-        return self._root_game.get_semi_copy()
+from typing import Self, Any
+from Game import Game
 
 
 class TreeNode:
     """
     Class characterizing a node of a Game Tree
     """
-    def __init__(self, exploration_const: int, parent=None, move_from_parent=None):
+
+    def __init__(self, exploration_const: int, parent: Self=None, move_from_parent: Any=None):
         """
 
         :param exploration_const: an exploration constant used for MCTS,
@@ -43,32 +23,32 @@ class TreeNode:
         self._num_sims = 0
         self._children = []
 
-    def get_parent(self):
+    def get_parent(self) -> Self:
         return self._parent
 
-    def get_move_from_parent(self):
+    def get_move_from_parent(self) -> Any:
         return self._move_from_parent
 
-    def get_num_wins(self):
+    def get_num_wins(self) -> int:
         return self._num_wins
 
-    def get_num_sims(self):
+    def get_num_sims(self) -> int:
         return self._num_sims
 
-    def increment_num_wins(self):
+    def increment_num_wins(self) -> None:
         self._num_wins += 1
 
-    def increment_num_sims(self):
+    def increment_num_sims(self) -> None:
         self._num_sims += 1
 
-    def append_child(self, child):
+    def append_child(self, child: Self) -> None:
         self._children.append(child)
 
-    def add_child(self, move_from_parent):
+    def add_child(self, move_from_parent: Any) -> None:
         child = TreeNode(self._exploration_const, self, move_from_parent)
         self._children.append(child)
 
-    def create_children(self, available_moves) -> None:
+    def create_children(self, available_moves: list[Any]) -> None:
         """
         Function creates self._children based on moves available from self.
 
@@ -78,7 +58,7 @@ class TreeNode:
             for move in available_moves:
                 self._children.append(TreeNode(self._exploration_const, self, move))
 
-    def get_children(self):
+    def get_children(self) -> list[Self]:
         return self._children
 
     def get_UCB(self) -> float:
@@ -90,7 +70,7 @@ class TreeNode:
         return (self.get_num_wins() / self.get_num_sims()) + self._exploration_const * math.sqrt(
             math.log(self._parent.get_num_sims()) / self.get_num_sims())
 
-    def get_max_UCB_child(self):
+    def get_max_UCB_child(self) -> Self:
         """Function returns node's child with max UCB."""
         best_child = self._children[0]
         max_UCB = best_child.get_UCB()
@@ -99,3 +79,26 @@ class TreeNode:
                 max_UCB = child.get_UCB()
                 best_child = child
         return best_child
+
+
+class GameTree:
+    """
+    Class stores game tree.
+
+    Intended to use with MCTS.
+    """
+
+    def __init__(self, root: TreeNode, root_game: Game):
+        """
+
+        :param root: a root of the tree.
+        :param root_game: a Game object representing game state in root
+        """
+        self._root_game = root_game.get_semi_copy()
+        self._root = root
+
+    def get_root(self) -> TreeNode:
+        return self._root
+
+    def get_root_game_copy(self) -> Game:
+        return self._root_game.get_semi_copy()

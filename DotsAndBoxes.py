@@ -4,20 +4,21 @@ from Game import Game
 from Engine import Engine
 from Mcts import Mcts
 from Lattice import LatticeNode, Lattice, get_neigh_coords
+from typing import Any
 
 
 class DotsAndBoxes(Board):
 
-    def __init__(self, first_player: Player, second_player: Player, attributes):
+    def __init__(self, first_player: Player, second_player: Player, attributes: Any) -> None:
         self._size = attributes
         super().__init__(first_player, second_player, attributes)
         self._score = 0
 
 
-    def generate_empty_board(self):
+    def generate_empty_board(self) -> Lattice:
         return Lattice(self._size + 1)
 
-    def change_board(self, move):
+    def change_board(self, move: Any) -> None:
         node_a = self.get_current_state()["board_state"].get_field(move[0])
         node_b = self.get_current_state()["board_state"].get_field(move[1])
         node_a.remove_connection(node_b)
@@ -31,7 +32,7 @@ class DotsAndBoxes(Board):
         if score_change == 0:
             self._alternate_player()
 
-    def get_available_moves(self):
+    def get_available_moves(self) -> list[Any]:
         available_moves = []
         for i in range(0, self._size + 1):
             for j in range(0, self._size + 1):

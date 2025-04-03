@@ -2,10 +2,11 @@ from Player import Player
 from Board import Board
 from Game import Game
 from Mcts import Mcts
+from typing import Any
 
 
 class Conn4Board(Board):
-    def change_board(self, move):
+    def change_board(self, move: Any) -> None:
         i = 0
         while True:
             if self._current_state["board_state"][i][move] == ' ' and (i > 4 or self._current_state["board_state"][i+1][move] != ' '):
@@ -14,7 +15,7 @@ class Conn4Board(Board):
                 break
             i += 1
 
-    def get_available_moves(self):
+    def get_available_moves(self) -> list[int]:
         return [i for i in range(7) if self._current_state["board_state"][0][i] == ' ']
 
     def is_there_a_victory(self) -> tuple[False, None] | tuple[True, Player]:
@@ -50,13 +51,13 @@ class Conn4Board(Board):
 
         return False, None
 
-    def generate_empty_board(self):
+    def generate_empty_board(self) -> list[list[str]]:
         board = [[' ', ' ', ' ', ' ', ' ', ' ', ' '].copy() for _ in range(6)]
         return board
 
 my_board = Conn4Board(Player(1, 'x'), Player(2, 'o'))
 my_game = Game(my_board)
-my_engine = Mcts(500, 10)
+my_engine = Mcts(2000, 20)
 
 while not my_game.is_finished()[0]:
     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")

@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
+
+from Board import Board
 from Player import Player
+from typing import Any, Self
 
 
 class Game:
-    def __init__(self, board, first_player=None, second_player=None):
+    def __init__(self, board: Any, first_player: Player=None, second_player: Player=None) -> None:
         """
         Initializer creates Game object.
 
@@ -17,7 +20,7 @@ class Game:
             second_player = self._board.get_players()[1]
         self._players = [first_player, second_player]
 
-    def move(self, move) -> Player:
+    def move(self, move: Any) -> Player:
         """
         Update the board state according to the move and return player to move.
 
@@ -61,14 +64,14 @@ class Game:
             else:
                 return True, self._board.get_player_to_move()
 
-    def get_current_player(self):
+    def get_current_player(self) -> Player:
         return self._board.get_player_to_move()
 
-    def get_board_state(self):
+    def get_board_state(self) -> Any:
         return self._board.get_current_state()["board_state"]
 
-    def get_available_moves(self):
+    def get_available_moves(self) -> Any:
         return self._board.get_available_moves()
 
-    def get_semi_copy(self):
+    def get_semi_copy(self) -> Self:
         return Game(self._board.get_semi_copy(), self._players[0], self._players[1])
