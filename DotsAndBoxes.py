@@ -1,10 +1,12 @@
+import random
+
 from Player import Player
 from Board import Board
 from Game import Game
-from Engine import Engine
 from Mcts import Mcts
 from Lattice import LatticeNode, Lattice, get_neigh_coords
 from typing import Any
+from RandEng import RandEng
 
 
 class DotsAndBoxes(Board):
@@ -32,6 +34,7 @@ class DotsAndBoxes(Board):
                     score_change -= 1
         if score_change == 0:
             self._alternate_player()
+        self._score += score_change
 
     def get_available_moves(self) -> list[Any]:
         available_moves = []
@@ -64,24 +67,28 @@ class DotsAndBoxes(Board):
             return False, None
 
     def __str__(self):
-        return self.get_current_state()["board_state"].__str__()
+        return self.get_current_state()["board_state"].__str__() + str(self._score)
 
-
-my_board = DotsAndBoxes(Player(1, True), Player(2, False), 5)
+player1 = Player(1, True)
+player2 = Player(2, False)
+my_board = DotsAndBoxes(player1, player2, 5)
 my_game = Game(my_board)
-my_engine = Mcts(500, 10)
+my_engine = Mcts(1000, 20)
+my_randEng = RandEng()
 
 while not my_game.is_finished()[0]:
-    print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
     print(my_game)
+    if my_game.get_current_player() == player1:
+        print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
 
-    i = int(input())
-    j = int(input())
-    x = (i, j)
-
-    i = int(input())
-    j = int(input())
-    my_game.move((x, (i, j)))
-    print(my_game)
-    print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
-    my_engine.run(my_game)
+        # i = int(input())
+        # j = int(input())
+        # x = (i, j)
+        #
+        # i = int(input())
+        # j = int(input())
+        # my_game.move((x, (i, j)))
+        my_randEng.run(my_game)
+    else:
+        print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
+        my_engine.run(my_game)
