@@ -4,6 +4,7 @@ from Game import Game
 from Engine import Engine
 from Mcts import Mcts
 from Minmax import Minmax
+from copy import deepcopy
 
 
 class TicBoard(Board):
@@ -51,14 +52,25 @@ class TicBoard(Board):
                     return True, player
         else:
             return False, None
+"""
+class Minmax_v2(Minmax):
+    def evaluate(self,game):
+
+        if game.is_finished()[1] is None:
+            return 0
+        elif game.is_finished()[1] == self.player:
+            return 1
+        else:
+            return -1
+"""
 
 player1 = Player(1,'X')
-player2 = Player(1,'O')
+player2 = Player(2,'O')
 depth = 10
 prun = False
 my_board = TicBoard(player1, player2)
 my_game = Game(my_board)
-my_engine = Minmax(depth,prun,my_board,player1,player2)
+my_engine = Minmax(depth,prun,player2)
 while not my_game.is_finished()[0]:
     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
     board = my_game.get_board_state()
@@ -72,6 +84,7 @@ while not my_game.is_finished()[0]:
     for x in board:
         print(x)
     my_engine.run(my_game)
+
 # while not my_game.is_finished()[0]:
 #     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
 #     board = my_game.get_board_state()
