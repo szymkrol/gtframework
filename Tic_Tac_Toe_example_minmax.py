@@ -67,7 +67,7 @@ class Minmax_v2(Minmax):
 player1 = Player(1,'X')
 player2 = Player(2,'O')
 depth = 10
-prun = False
+prun = True
 my_board = TicBoard(player1, player2)
 my_game = Game(my_board)
 my_engine = Minmax(depth,prun,player2)
