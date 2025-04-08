@@ -76,5 +76,8 @@ class Game:
     def get_semi_copy(self) -> Self:
         return Game(self._board.get_semi_copy(), self._players[0], self._players[1])
 
+    def get_board(self) -> Board:
+        return self._board
+
     def __str__(self):
         return self._board.__str__()

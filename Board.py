@@ -5,8 +5,8 @@ from typing import Any, Self
 
 
 class Board(ABC):
-    def __init__(self, first_player: Player, second_player: Player, attributes=None, turn_part = 0) -> None:
-        self._current_state = {"board_state": self.generate_empty_board(), "player_to_move": first_player}
+    def __init__(self, first_player: Player, second_player: Player, attributes=None, turn_part=0, state_attr=None) -> None:
+        self._current_state = {"board_state": self.generate_empty_board(), "player_to_move": first_player, "state_attr": state_attr}
         self._past_states = []  # Stack of past states
         self._players = [first_player, second_player]
         self._turn_part = turn_part
@@ -42,14 +42,20 @@ class Board(ABC):
         return self._current_state["player_to_move"]
 
     def _semi_copy_state(self, state: dict[str: Any]) -> dict[str: Any]:
-        return {"board_state": deepcopy(state["board_state"]), "player_to_move": state["player_to_move"]}
+        return {"board_state": deepcopy(state["board_state"]), "player_to_move": state["player_to_move"], "state_attr": deepcopy(state["state_attr"])}
 
     def get_semi_copy(self) -> Self:
         """Returns a copy with a reference to the same players, but different board state and past_states."""
-        new_board = self.__class__(self._players[0], self._players[1], attributes=deepcopy(self._attributes))
+        new_board = self.__class__(self._players[0], self._players[1], attributes=deepcopy(self._attributes), turn_part=self._turn_part)
         new_board._current_state = self._semi_copy_state(self._current_state)
         new_board._past_states = [self._semi_copy_state(state) for state in self._past_states]
         return new_board
+
+    def get_state_attr(self) -> Any:
+        return self._current_state["state_attr"]
+
+    def set_state_attr(self, attr: Any) -> None:
+        self._current_state["state_attr"] = attr
 
     def _alternate_player(self) -> None:
         """Function changes current player to the other one."""
