@@ -5,7 +5,7 @@ from typing import Any, Self
 
 
 class Board(ABC):
-    def __init__(self, first_player: Player, second_player: Player, attributes=None, turn_part=0, state_attr=None) -> None:
+    def __init__(self, first_player: Player, second_player: Player, attributes: Any=None, turn_part: int=0, state_attr: Any=None) -> None:
         self._current_state = {"board_state": self.generate_empty_board(), "player_to_move": first_player, "state_attr": state_attr}
         self._past_states = []  # Stack of past states
         self._players = [first_player, second_player]

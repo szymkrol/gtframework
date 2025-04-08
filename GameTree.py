@@ -88,7 +88,7 @@ class GameTree:
     Intended to use with MCTS.
     """
 
-    def __init__(self, root: TreeNode, root_game: Game):
+    def __init__(self, root: TreeNode, root_game: Game) -> None:
         """
 
         :param root: a root of the tree.

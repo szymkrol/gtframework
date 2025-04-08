@@ -14,7 +14,7 @@ class Minmax(Engine):
         self.prun = prun
         self.player = player  # gracz, dla którego minimax liczy ruch
 
-    def run(self, game) -> None:
+    def run(self, game: Game) -> None:
         if self.prun:
             move = self.pruning(game)[0]
         else:
@@ -22,7 +22,7 @@ class Minmax(Engine):
         Engine.run(self, game, move)
 
     #  @abstractmethod
-    def evaluate(self, game) -> int:
+    def evaluate(self, game: Game) -> int:
         if game.is_finished()[1] is None:
             return 0
         elif game.is_finished()[1] == self.player:

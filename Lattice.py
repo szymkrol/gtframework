@@ -13,7 +13,7 @@ def get_neigh_coords(coord: tuple[int, int], size: int) -> list[tuple[int, int]]
 
 
 class LatticeNode:
-    def __init__(self, coords, attr='') -> None:
+    def __init__(self, coords: tuple[int, int], attr: str='') -> None:
         self._neighbours = []
         self._attribute = attr
         self._coords = coords
@@ -100,7 +100,7 @@ class Lattice:
     def are_connected(self, coord1: tuple[int, int], coord2: tuple[int, int]) -> bool:
         return self.get_field(coord1) in self.get_connections(coord2)
 
-    def __str__(self):
+    def __str__(self) -> str:
         output = ''
         for i in range(2*self._size-1):
             for j in range(2*self._size-1):

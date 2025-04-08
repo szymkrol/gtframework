@@ -11,9 +11,9 @@ from Minmax import Minmax
 
 class DotsAndBoxes(Board):
 
-    def __init__(self, first_player: Player, second_player: Player, attributes: Any, turn_part=0, state_attr=0) -> None:
+    def __init__(self, first_player: Player, second_player: Player, attributes: Any, turn_part: int=0, score: int=0) -> None:
         self._size = attributes
-        super().__init__(first_player, second_player, attributes, turn_part = turn_part, state_attr=state_attr)
+        super().__init__(first_player, second_player, attributes, turn_part = turn_part, state_attr=score)
 
     def generate_empty_board(self) -> Lattice:
         return Lattice(self._size + 1)
@@ -64,10 +64,10 @@ class DotsAndBoxes(Board):
         else:
             return False, None
 
-    def get_score(self):
+    def get_score(self) -> int:
         return self.get_state_attr()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.get_current_state()["board_state"].__str__() + str(self.get_state_attr())
 
 class DotMax(Minmax):

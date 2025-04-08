@@ -13,7 +13,7 @@ class Mcts(Engine):
     Class should make a move for the current player based on the MCTS method.
     """
 
-    def __init__(self, iter_limit: int, time_limit: float, const=1.41) -> None:
+    def __init__(self, iter_limit: int, time_limit: float, const: float=1.41) -> None:
         """
         Engine constructor
         :param iter_limit: maximum number of iterations spend on traversing tree.

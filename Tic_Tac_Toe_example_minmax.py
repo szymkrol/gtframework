@@ -8,10 +8,10 @@ from copy import deepcopy
 
 
 class TicBoard(Board):
-    def generate_empty_board(self):
+    def generate_empty_board(self) -> list[list[str]]:
         return [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
 
-    def get_available_moves(self):
+    def get_available_moves(self) -> list[tuple[int, int]]:
         available_moves = []
         for i, row in enumerate(self.get_current_state()["board_state"]):
             for j, cell in enumerate(row):
@@ -19,7 +19,7 @@ class TicBoard(Board):
                     available_moves.append((i, j))
         return available_moves
 
-    def change_board(self, move):
+    def change_board(self, move: tuple[int, int]) -> None:
         i, j = move
         player = self.get_current_state()["player_to_move"]
         if player == self.get_players()[0]:
