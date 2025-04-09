@@ -13,20 +13,21 @@ class Mcts(Engine):
     Class should make a move for the current player based on the MCTS method.
     """
 
-    def __init__(self, iter_limit: int, time_limit: float, const: float=1.41) -> None:
+    def __init__(self, iter_limit: int, time_limit: float, const: float = 1.41, remember_past: bool = True) -> None:
         """
         Engine constructor
         :param iter_limit: maximum number of iterations spend on traversing tree.
         :param time_limit: maximum time (in seconds) spend on traversing tree.
         :param const: exploration parameter
+        :param remember_past: whether the game has to remember past states to work properly
         """
         self._iter_limit = iter_limit
         self._time_limit = time_limit
         self._const = const
+        self._remember_past = remember_past
 
     def run(self, game: Game) -> bool:
         move = self.mcts(game)
-        print(move)
         return Engine.run(self, game, move)
 
     def mcts(self, game: Game) -> Any:
@@ -35,7 +36,9 @@ class Mcts(Engine):
         :param game:
         :return: Best move
         """
-        tree = GameTree(TreeNode(exploration_const=self._const), game)
+        root = TreeNode(exploration_const=self._const)
+        tree = GameTree(root, game)
+
         i = 0
         t_end = time.time() + self._time_limit
 
@@ -45,22 +48,22 @@ class Mcts(Engine):
             i += 1
 
         # Find best node
-        children = tree.get_root().get_children()
-        children.sort(key=lambda node: node.get_num_sims(), reverse=True)
-        best_node = children[0]
+        children = root.get_children()
+        if not children:
+            return random.choice(game.get_available_moves())
+        best_node = max(children, key=lambda node: node.get_num_sims())
         return best_node.get_move_from_parent()
 
     def _play_to_end(self, game: Game) -> tuple[False, None] | tuple[True, Player]:
         """Function plays randomly until game finishes."""
         while not game.is_finished()[0]:
-            available_moves = game.get_available_moves()
-            game.move(random.choice(available_moves))
+            game.move(random.choice(game.get_available_moves()))
         return game.is_finished()
 
     def _single_mcts(self, tree: GameTree) -> None:
         """Method performs single MCTS iteration."""
         current_node = tree.get_root()
-        current_game = tree.get_root_game_copy()
+        current_game = tree.get_root_game_copy(is_revertible=False, remember_past=self._remember_past)
         first_player = current_game.get_current_player()
 
         # Finding the most promising leaf
@@ -71,7 +74,7 @@ class Mcts(Engine):
         if not current_game.is_finished()[0]:
             # Game has not finished yet
             current_node.create_children(current_game.get_available_moves())
-            best_node = current_node.get_max_UCB_child()
+            best_node = random.choice(current_node.get_children())
             current_game.move(best_node.get_move_from_parent())
             result = self._play_to_end(current_game)
             best_node.increment_num_sims()
@@ -90,12 +93,8 @@ class Mcts(Engine):
                     is_win = True
 
         # Backpropagation
-        while current_node.get_parent() is not None:
+        while current_node:
             current_node.increment_num_sims()
             if is_win:
                 current_node.increment_num_wins()
             current_node = current_node.get_parent()
-        # Root update
-        current_node.increment_num_sims()
-        if is_win:
-            current_node.increment_num_wins()

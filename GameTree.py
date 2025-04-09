@@ -100,5 +100,5 @@ class GameTree:
     def get_root(self) -> TreeNode:
         return self._root
 
-    def get_root_game_copy(self) -> Game:
-        return self._root_game.get_semi_copy()
+    def get_root_game_copy(self, is_revertible: bool = True, remember_past: bool = True) -> Game:
+        return self._root_game.get_semi_copy(is_revertible=is_revertible, remember_past=remember_past)

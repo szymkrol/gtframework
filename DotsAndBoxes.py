@@ -9,11 +9,14 @@ from typing import Any
 from RandEng import RandEng
 from Minmax import Minmax
 
+
 class DotsAndBoxes(Board):
 
-    def __init__(self, first_player: Player, second_player: Player, attributes: Any, turn_part: int=0, score: int=0) -> None:
+    def __init__(self, first_player: Player, second_player: Player, attributes: Any, turn_part: int = 0, score: int = 0,
+                 is_revertible: bool = True, remember_past: bool = True) -> None:
         self._size = attributes
-        super().__init__(first_player, second_player, attributes, turn_part = turn_part, state_attr=score)
+        super().__init__(first_player, second_player, attributes, turn_part=turn_part, state_attr=score,
+                         is_revertible=is_revertible, remember_past=remember_past)
 
     def generate_empty_board(self) -> Lattice:
         return Lattice(self._size + 1)
@@ -70,6 +73,7 @@ class DotsAndBoxes(Board):
     def __str__(self) -> str:
         return self.get_current_state()["board_state"].__str__() + str(self.get_state_attr())
 
+
 class DotMax(Minmax):
     def evaluate(self, game: Game) -> int:
         return -game.get_board().get_score()
@@ -79,8 +83,8 @@ player1 = Player(1, "MCTS")
 player2 = Player(2, "MINIMAX")
 my_board = DotsAndBoxes(player1, player2, 5)
 my_game = Game(my_board)
-my_mcts = Mcts(500, 10)
-my_minimax = DotMax(3, True, player2)
+my_mcts = Mcts(1000, 10, remember_past=False)
+my_minimax = DotMax(2, True, player2)
 my_randEng = RandEng()
 
 while not my_game.is_finished()[0]:
@@ -98,4 +102,4 @@ while not my_game.is_finished()[0]:
         my_mcts.run(my_game)
     else:
         print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
-        my_minimax.run(my_game)
+        my_randEng.run(my_game)
