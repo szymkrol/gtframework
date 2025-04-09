@@ -78,3 +78,6 @@ class Game:
 
     def __str__(self):
         return self._board.__str__()
+
+    def get_players(self):
+        return self._players
