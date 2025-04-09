@@ -1,19 +1,16 @@
 from typing import Any, Self
 
+
 def get_neigh_coords(coord: tuple[int, int], size: int) -> list[tuple[int, int]]:
     x, y = coord
-    neighbors = []
-
-    differences = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    for dx, dy in differences:
-        nx, ny = x + dx, y + dy
-        if 0 <= nx < size and 0 <= ny < size:
-            neighbors.append((nx, ny))
-    return neighbors
+    diffs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    return [(x + dx, y + dy) for dx, dy in diffs if 0 <= x + dx < size and 0 <= y + dy < size]
 
 
 class LatticeNode:
-    def __init__(self, coords: tuple[int, int], attr: str='') -> None:
+    __slots__ = ('_neighbours', '_attribute', '_coords')
+
+    def __init__(self, coords: tuple[int, int], attr: str = '') -> None:
         self._neighbours = []
         self._attribute = attr
         self._coords = coords
@@ -34,27 +31,20 @@ class LatticeNode:
         return self._neighbours
 
     def add_connection(self, neigh: Self) -> None:
-        if neigh is None:
-            return
-        neigh.add_neighbour(self)
-        self.add_neighbour(neigh)
+        if neigh:
+            neigh.add_neighbour(self)
+            self.add_neighbour(neigh)
 
     def remove_connection(self, neigh: Self) -> None:
-        if neigh is None:
-            return
-        if self not in neigh.get_neighbours():
-            return
-        neigh.remove_neighbour(self)
-        self.remove_neighbour(neigh)
+        if neigh and self in neigh.get_neighbours():
+            neigh.remove_neighbour(self)
+            self.remove_neighbour(neigh)
 
     def get_coords(self) -> tuple[int, int]:
         return self._coords
 
     def is_closed(self) -> bool:
-        if len(self._neighbours) == 0:
-            return True
-        else:
-            return False
+        return not self._neighbours
 
 
 class Lattice:
@@ -65,48 +55,40 @@ class Lattice:
         for i in range(size):
             for j in range(size):
                 if (i == 0 or i == size - 1) and (j == 0 or j == size - 1):
-                    self._board[i][j] = None
-                else:
-                    if i == 0 or i == size - 1 or j == 0 or j == size - 1:
-                        new_node = LatticeNode((i, j), 'b')
-                    else:
-                        new_node = LatticeNode((i, j), '_')
-                    neighs = get_neigh_coords((i, j), self._size)
-                    for neigh in neighs:
-                        if self.get_field(neigh) is not None:
-                            if new_node.get_attribute() != 'b' or self.get_field(neigh).get_attribute() != 'b':
-                                new_node.add_connection(self.get_field(neigh))
-                    self._board[i][j] = new_node
+                    continue  # corners stay None
+                attr = 'b' if i == 0 or i == size - 1 or j == 0 or j == size - 1 else '_'
+                new_node = LatticeNode((i, j), attr)
+                for ni, nj in get_neigh_coords((i, j), size):
+                    neighbor = self._board[ni][nj]
+                    if neighbor and (new_node.get_attribute() != 'b' or neighbor.get_attribute() != 'b'):
+                        new_node.add_connection(neighbor)
+                self._board[i][j] = new_node
 
-    def get_field(self, coord: tuple[int, int]) -> LatticeNode:
+    def get_field(self, coord: tuple[int, int]) -> LatticeNode | None:
         return self._board[coord[0]][coord[1]]
 
     def get_connections(self, coord: tuple[int, int]) -> list[LatticeNode]:
         node = self.get_field(coord)
-        if node is None:
-            return []
-        else:
-            return node.get_neighbours()
+        return node.get_neighbours() if node else []
 
     def get_lower_right_connections(self, coord: tuple[int, int]) -> list[LatticeNode]:
-        conn = self.get_connections(coord)
-        x, y = self.get_field(coord).get_coords()
-        good_neighs = []
-        for neigh in conn:
-            x_n, y_n = neigh.get_coords()
-            if x_n > x or y_n > y:
-                good_neighs.append(neigh)
-        return good_neighs
+        node = self.get_field(coord)
+        if node is None:
+            return []
+        x, y = node.get_coords()
+        return [n for n in node.get_neighbours() if n.get_coords()[0] > x or n.get_coords()[1] > y]
+
     def are_connected(self, coord1: tuple[int, int], coord2: tuple[int, int]) -> bool:
-        return self.get_field(coord1) in self.get_connections(coord2)
+        node2 = self.get_field(coord2)
+        return node2 and self.get_field(coord1) in node2.get_neighbours()
 
     def __str__(self) -> str:
         output = ''
-        for i in range(2*self._size-1):
-            for j in range(2*self._size-1):
+        for i in range(2 * self._size - 1):
+            for j in range(2 * self._size - 1):
                 if i % 2 == 0:
                     if j % 2 == 0:
-                        field = self.get_field((int(i/2), int(j/2)))
+                        field = self.get_field((int(i / 2), int(j / 2)))
                         if field is None:
                             output += "N"
                         else:
@@ -120,7 +102,7 @@ class Lattice:
                     if j % 2 == 1:
                         output += ' '
                     else:
-                        if self.are_connected((int((i - 1) / 2), int(j / 2)), (int((i + 1) / 2), int(j  / 2))):
+                        if self.are_connected((int((i - 1) / 2), int(j / 2)), (int((i + 1) / 2), int(j / 2))):
                             output += '|'
                         else:
                             output += ' '

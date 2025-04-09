@@ -4,7 +4,6 @@ from GameTree import GameTree, TreeNode
 from typing import Any
 import random
 import time
-
 from Player import Player
 
 
@@ -28,7 +27,7 @@ class Mcts(Engine):
 
     def run(self, game: Game) -> bool:
         move = self.mcts(game)
-        return Engine.run(self, game, move)
+        return super().run(game, move)
 
     def mcts(self, game: Game) -> Any:
         """
@@ -39,20 +38,17 @@ class Mcts(Engine):
         root = TreeNode(exploration_const=self._const)
         tree = GameTree(root, game)
 
-        i = 0
         t_end = time.time() + self._time_limit
-
-        # Doing MCTS within constraints
-        while i < self._iter_limit and time.time() < t_end:
+        for _ in range(self._iter_limit):
+            if time.time() >= t_end:
+                break
             self._single_mcts(tree)
-            i += 1
 
         # Find best node
         children = root.get_children()
         if not children:
             return random.choice(game.get_available_moves())
-        best_node = max(children, key=lambda node: node.get_num_sims())
-        return best_node.get_move_from_parent()
+        return max(children, key=lambda c: c.get_num_sims()).get_move_from_parent()
 
     def _play_to_end(self, game: Game) -> tuple[False, None] | tuple[True, Player]:
         """Function plays randomly until game finishes."""
@@ -71,28 +67,16 @@ class Mcts(Engine):
             current_node = current_node.get_max_UCB_child()
             current_game.move(current_node.get_move_from_parent())
 
-        if not current_game.is_finished()[0]:
-            # Game has not finished yet
+        # Expansion
+        finished, winner = current_game.is_finished()
+        if not finished:
             current_node.create_children(current_game.get_available_moves())
-            best_node = random.choice(current_node.get_children())
-            current_game.move(best_node.get_move_from_parent())
-            result = self._play_to_end(current_game)
-            best_node.increment_num_sims()
-            is_win = False
-            if result[0]:
-                if result[1] == first_player:
-                    best_node.increment_num_wins()
-                    is_win = True
-
-        else:
-            # Game has already finished
-            result = current_game.is_finished()
-            is_win = False
-            if result[0]:
-                if result[1] == first_player:
-                    is_win = True
+            current_node = random.choice(current_node.get_children())
+            current_game.move(current_node.get_move_from_parent())
+            finished, winner = self._play_to_end(current_game)
 
         # Backpropagation
+        is_win = finished and winner == first_player
         while current_node:
             current_node.increment_num_sims()
             if is_win:
