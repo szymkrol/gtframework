@@ -9,7 +9,7 @@ class TreeNode:
     Class characterizing a node of a Game Tree
     """
 
-    def __init__(self, exploration_const: int, parent: Self=None, move_from_parent: Any=None):
+    def __init__(self, exploration_const: float, parent: Self = None, move_from_parent: Any = None):
         """
 
         :param exploration_const: an exploration constant used for MCTS,

@@ -1,7 +1,7 @@
 from Engine import Engine
 from Game import Game
 from GameTree import GameTree, TreeNode
-from typing import Any, Tuple
+from typing import Any
 import random
 import time
 
@@ -15,7 +15,7 @@ class Mcts(Engine):
 
     def __init__(self, iter_limit: int, time_limit: float, const: float = 1.41, remember_past: bool = True) -> None:
         """
-        Engine constructor
+        Engine constructor.
         :param iter_limit: maximum number of iterations spend on traversing tree.
         :param time_limit: maximum time (in seconds) spend on traversing tree.
         :param const: exploration parameter
@@ -32,9 +32,9 @@ class Mcts(Engine):
 
     def mcts(self, game: Game) -> Any:
         """
-        Function evaluates the game tree and returns best move for current player according to MCTS
-        :param game:
-        :return: Best move
+        Function evaluates the game tree and returns best move for current player according to MCTS.
+        :param game: game on which MCTS is to be done.
+        :return: best move.
         """
         root = TreeNode(exploration_const=self._const)
         tree = GameTree(root, game)

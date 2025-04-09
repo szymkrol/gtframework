@@ -12,6 +12,10 @@ class Game:
         Initializer creates Game object.
 
         :param board: initial game board, should be an instance of class, which inherits from Board.
+        :param first_player: first player to move in a game.
+        :param second_player: second player.
+        :param is_revertible: if True, game can be reverted.
+        :param remember_past: if True, game remembers its past states.
         """
 
         self._board = board
@@ -80,6 +84,12 @@ class Game:
         return self._board.get_available_moves()
 
     def get_semi_copy(self, is_revertible: None | bool = None, remember_past: None | bool = None) -> Self:
+        """
+        Method returns copy of an item with reference to same Player objects, but a semi_copy of board
+        :param is_revertible: if True, game can be reverted
+        :param remember_past: if True, game remembers its past states
+        :return: Game object
+        """
         if is_revertible is None:
             is_revertible = self._is_revertible
         if remember_past is None:

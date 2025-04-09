@@ -7,6 +7,18 @@ from typing import Any, Self
 class Board(ABC):
     def __init__(self, first_player: Player, second_player: Player, attributes: Any = None, turn_part: int = 0,
                  state_attr: Any = None, is_revertible: bool = True, remember_past: bool = True) -> None:
+        """
+        Initializer of Board object
+
+        :param first_player: first player to move in a game.
+        :param second_player: the other player.
+        :param attributes: attributes of a board in general.
+        :param turn_part: part of the move that is currently to be played.
+        :param state_attr: attributes specific to initial board_state (attributes may change after move)
+        :param is_revertible: if True, game can be reverted
+        :param remember_past: if True, game remembers its past states
+        """
+
         self._current_state = {"board_state": self.generate_empty_board(), "player_to_move": first_player,
                                "state_attr": state_attr}
         self._is_revertible = is_revertible
@@ -34,7 +46,12 @@ class Board(ABC):
         return self._players
 
     def pop_from_past(self) -> None | dict[str: Any]:
-        """Function pops newest past state from the stack."""
+        """
+        Function pops newest past state from the stack.
+
+        :return: None if no past states on the stack or if game doesn't remember past states, else gets most recent
+        past_state.
+        """
         if len(self._past_states) == 0 or not self._remember_past:
             return None
         else:
@@ -50,6 +67,12 @@ class Board(ABC):
         return self._current_state["player_to_move"]
 
     def _semi_copy_state(self, state: dict[str: Any]) -> dict[str: Any]:
+        """
+        Function returns semi_copy of current_state (deepcopy of board_state and state_attr, but reference to the
+        same player_to_move.
+        :param state: state to be copied.
+        :return: semi_copy of a state.
+        """
         return {"board_state": deepcopy(state["board_state"]), "player_to_move": state["player_to_move"],
                 "state_attr": deepcopy(state["state_attr"])}
 
