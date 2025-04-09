@@ -20,14 +20,9 @@ class Minmax(Engine):
             move = self.minimax( deepcopy(game))[0]
         Engine.run(self, game, move)
 
-    #  @abstractmethod
+    @abstractmethod
     def evaluate(self, game):
-        if game.is_finished()[1] is None:
-            return 0
-        elif game.is_finished()[1].get_id() == self.player:
-            return 100
-        else:
-            return -50
+        pass
 
     def minimax(self, game: Game, iteration=0) -> (int, int):
         moves = game.get_available_moves()
