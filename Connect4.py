@@ -4,6 +4,8 @@ from Game import Game
 from Mcts import Mcts
 from typing import Any
 from Minmax import Minmax
+from collections.abc import Hashable
+from itertools import chain
 
 
 class Conn4Board(Board):
@@ -56,9 +58,12 @@ class Conn4Board(Board):
         board = [[' ', ' ', ' ', ' ', ' ', ' ', ' '].copy() for _ in range(6)]
         return board
 
+    def get_state_repr(self) -> Hashable:
+        return tuple(chain(*self._current_state["board_state"]))
+
 
 class Connect_4_Minmax(Minmax):
-    def three_in_a_row(self,game):
+    def three_in_a_row(self, game):
         board = game.get_board_state()
 
         # Horizontal wins
@@ -107,7 +112,7 @@ class Connect_4_Minmax(Minmax):
 my_board = Conn4Board(Player(1, 'x'), Player(2, 'o'))
 my_game = Game(my_board)
 my_engine = Mcts(2000, 20)
-my_engine_v2 = Connect_4_Minmax(depth=5,prun=True,player=my_game.get_current_player())
+my_engine_v2 = Connect_4_Minmax(depth=5, prun=True, player=my_game.get_current_player())
 
 while not my_game.is_finished()[0]:
     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
@@ -122,4 +127,3 @@ while not my_game.is_finished()[0]:
         print(x)
     #  my_engine.run(my_game)
     my_engine_v2.run(my_game)
-
