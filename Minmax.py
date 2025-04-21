@@ -21,14 +21,9 @@ class Minmax(Engine):
             move = self.minimax(game)[0]
         Engine.run(self, game, move)
 
-    #  @abstractmethod
-    def evaluate(self, game: Game) -> int:
-        if game.is_finished()[1] is None:
-            return 0
-        elif game.is_finished()[1] == self.player:
-            return 100
-        else:
-            return -50
+    @abstractmethod
+    def evaluate(self, game):
+        pass
 
     def minimax(self, game: Game, iteration: int=0) -> tuple[Any, int]:
         moves = game.get_available_moves()
