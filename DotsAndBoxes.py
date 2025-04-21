@@ -7,15 +7,16 @@ from Mcts import Mcts
 from Lattice import LatticeNode, Lattice, get_neigh_coords
 from typing import Any
 from RandEng import RandEng
+from Minmax import Minmax
 
 
 class DotsAndBoxes(Board):
 
-    def __init__(self, first_player: Player, second_player: Player, attributes: Any) -> None:
+    def __init__(self, first_player: Player, second_player: Player, attributes: int, turn_part: int = 0, score: int = 0,
+                 is_revertible: bool = True, remember_past: bool = True) -> None:
         self._size = attributes
-        super().__init__(first_player, second_player, attributes)
-        self._score = 0
-
+        super().__init__(first_player, second_player, attributes=attributes, turn_part=turn_part, state_attr=score,
+                         is_revertible=is_revertible, remember_past=remember_past)
 
     def generate_empty_board(self) -> Lattice:
         return Lattice(self._size + 1)
@@ -28,13 +29,13 @@ class DotsAndBoxes(Board):
         for node in [node_a, node_b]:
             if node.is_closed() and node.get_attribute() == '_':
                 node.set_attribute('x')
-                if self.get_current_state()["player_to_move"].get_attributes():
+                if self.get_current_state()["player_to_move"] == self._players[0]:
                     score_change += 1
                 else:
                     score_change -= 1
         if score_change == 0:
             self._alternate_player()
-        self._score += score_change
+        self.set_state_attr(self.get_state_attr() + score_change)
 
     def get_available_moves(self) -> list[Any]:
         available_moves = []
@@ -49,10 +50,10 @@ class DotsAndBoxes(Board):
 
     def is_there_a_victory(self) -> tuple[False, None] | tuple[True, Player]:
         if len(self.get_available_moves()) == 0:
-            if self._score == 0:
+            if self.get_state_attr() == 0:
                 return False, None
             players = self.get_players()
-            if self._score > 0:
+            if self.get_state_attr() > 0:
                 if players[0].get_attributes():
                     winner = players[0]
                 else:
@@ -66,14 +67,24 @@ class DotsAndBoxes(Board):
         else:
             return False, None
 
-    def __str__(self):
-        return self.get_current_state()["board_state"].__str__() + str(self._score)
+    def get_score(self) -> int:
+        return self.get_state_attr()
 
-player1 = Player(1, True)
-player2 = Player(2, False)
+    def __str__(self) -> str:
+        return self.get_current_state()["board_state"].__str__() + str(self.get_state_attr())
+
+
+class DotMax(Minmax):
+    def evaluate(self, game: Game) -> int:
+        return -game.get_board().get_score()
+
+
+player1 = Player(1, "MCTS")
+player2 = Player(2, "MINIMAX")
 my_board = DotsAndBoxes(player1, player2, 5)
 my_game = Game(my_board)
-my_engine = Mcts(1000, 20)
+my_mcts = Mcts(1000, 10, remember_past=False, const=2.5)
+my_minimax = DotMax(3, True, player2)
 my_randEng = RandEng()
 
 while not my_game.is_finished()[0]:
@@ -88,7 +99,7 @@ while not my_game.is_finished()[0]:
         # i = int(input())
         # j = int(input())
         # my_game.move((x, (i, j)))
-        my_randEng.run(my_game)
+        my_mcts.run(my_game)
     else:
         print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
-        my_engine.run(my_game)
+        my_minimax.run(my_game)

@@ -1,5 +1,4 @@
 import math
-import typing
 from typing import Self, Any
 from Game import Game
 
@@ -9,7 +8,12 @@ class TreeNode:
     Class characterizing a node of a Game Tree
     """
 
-    def __init__(self, exploration_const: int, parent: Self=None, move_from_parent: Any=None):
+    __slots__ = (
+        "_exploration_const", "_parent", "_move_from_parent",
+        "_num_wins", "_num_sims", "_children"
+    )
+
+    def __init__(self, exploration_const: float, parent: Self = None, move_from_parent: Any = None):
         """
 
         :param exploration_const: an exploration constant used for MCTS,
@@ -45,40 +49,30 @@ class TreeNode:
         self._children.append(child)
 
     def add_child(self, move_from_parent: Any) -> None:
-        child = TreeNode(self._exploration_const, self, move_from_parent)
-        self._children.append(child)
+        self._children.append(TreeNode(self._exploration_const, self, move_from_parent))
 
     def create_children(self, available_moves: list[Any]) -> None:
-        """
-        Function creates self._children based on moves available from self.
-
-        :param available_moves: a list of moves possible from current node
-        """
+        """Create children based on moves available from this node."""
         if not self._children:
-            for move in available_moves:
-                self._children.append(TreeNode(self._exploration_const, self, move))
+            self._children = [TreeNode(self._exploration_const, self, move) for move in available_moves]
 
     def get_children(self) -> list[Self]:
         return self._children
 
     def get_UCB(self) -> float:
-        """Function returns node's UCB used for MCTS."""
-        if self.get_num_sims() == 0:
+        """Return the node's UCB score used for MCTS."""
+        if self._num_sims == 0:
             return float('inf')
-        if self._parent.get_num_sims() == 0:
+        parent_sims = self._parent._num_sims
+        if parent_sims == 0:
             return float('-inf')
-        return (self.get_num_wins() / self.get_num_sims()) + self._exploration_const * math.sqrt(
-            math.log(self._parent.get_num_sims()) / self.get_num_sims())
+        exploitation = self._num_wins / self._num_sims
+        exploration = self._exploration_const * math.sqrt(math.log(parent_sims) / self._num_sims)
+        return exploitation + exploration
 
     def get_max_UCB_child(self) -> Self:
-        """Function returns node's child with max UCB."""
-        best_child = self._children[0]
-        max_UCB = best_child.get_UCB()
-        for child in self._children:
-            if child.get_UCB() > max_UCB:
-                max_UCB = child.get_UCB()
-                best_child = child
-        return best_child
+        """Return the child with the maximum UCB score."""
+        return max(self._children, key=TreeNode.get_UCB)
 
 
 class GameTree:
@@ -88,7 +82,7 @@ class GameTree:
     Intended to use with MCTS.
     """
 
-    def __init__(self, root: TreeNode, root_game: Game):
+    def __init__(self, root: TreeNode, root_game: Game) -> None:
         """
 
         :param root: a root of the tree.
@@ -100,5 +94,5 @@ class GameTree:
     def get_root(self) -> TreeNode:
         return self._root
 
-    def get_root_game_copy(self) -> Game:
-        return self._root_game.get_semi_copy()
+    def get_root_game_copy(self, is_revertible: bool = True, remember_past: bool = True) -> Game:
+        return self._root_game.get_semi_copy(is_revertible=is_revertible, remember_past=remember_past)
