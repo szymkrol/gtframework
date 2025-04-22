@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from Board import Board
 from Player import Player
 from typing import Any, Self
+from collections.abc import Hashable
 
 
 class Game:
@@ -99,8 +100,11 @@ class Game:
     def get_board(self) -> Board:
         return self._board
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._board.__str__()
 
-    def get_players(self):
+    def get_players(self) -> list[Player]:
         return self._players
+
+    def get_state_repr(self) -> Hashable:
+        return self._board.get_state_repr()
