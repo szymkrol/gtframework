@@ -3,6 +3,8 @@ from Board import Board
 from Game import Game
 from Engine import Engine
 from Mcts import Mcts
+from collections.abc import Hashable
+from itertools import chain
 
 
 class TicBoard(Board):
@@ -47,6 +49,9 @@ class TicBoard(Board):
                     return True, player
         else:
             return False, None
+
+    def get_state_repr(self) -> Hashable:
+        return tuple(chain(*self._current_state["board_state"]))
 
 
 my_board = TicBoard(Player(1, 'x'), Player(2, 'o'))

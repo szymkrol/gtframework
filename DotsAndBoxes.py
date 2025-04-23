@@ -8,6 +8,8 @@ from Lattice import LatticeNode, Lattice, get_neigh_coords
 from typing import Any
 from RandEng import RandEng
 from Minmax import Minmax
+from collections.abc import Hashable
+from itertools import chain
 
 
 class DotsAndBoxes(Board):
@@ -66,6 +68,9 @@ class DotsAndBoxes(Board):
             return True, winner
         else:
             return False, None
+
+    def get_state_repr(self) -> Hashable:
+        return self.get_current_state()["board_state"].get_state_repr()
 
     def get_score(self) -> int:
         return self.get_state_attr()

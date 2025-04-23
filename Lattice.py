@@ -1,4 +1,5 @@
 from typing import Any, Self
+from collections.abc import Hashable
 
 
 def get_neigh_coords(coord: tuple[int, int], size: int) -> list[tuple[int, int]]:
@@ -49,7 +50,7 @@ class LatticeNode:
 
 class Lattice:
     def __init__(self, size: int) -> None:
-        self._board = [([None] * size).copy() for _ in range(size)]
+        self._board: list[list[None | LatticeNode]] = [([None] * size).copy() for _ in range(size)]
         self._size = size
 
         for i in range(size):
@@ -81,6 +82,19 @@ class Lattice:
     def are_connected(self, coord1: tuple[int, int], coord2: tuple[int, int]) -> bool:
         node2 = self.get_field(coord2)
         return node2 and self.get_field(coord1) in node2.get_neighbours()
+
+    def get_state_repr(self) -> Hashable:
+        representation = [self._size]
+        for i in range(self._size):
+            for j in range(self._size):
+                node = self.get_field((i, j))
+                if node is None:
+                    continue
+                if i + 1 < self._size:
+                    representation.append(1 if self.are_connected((i, j), (i+1, j)) else 0)
+                if j + 1 < self._size:
+                    representation.append(1 if self.are_connected((i, j), (i, j+1)) else 0)
+                return tuple(representation)
 
     def __str__(self) -> str:
         output = ''

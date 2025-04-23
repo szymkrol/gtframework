@@ -14,12 +14,12 @@ class Minmax(Engine):
         self.prun = prun
         self.player = player  # gracz, dla którego minimax liczy ruch
 
-    def run(self, game: Game) -> None:
+    def run(self, game: Game) -> bool:
         if self.prun:
             move = self.pruning(game)[0]
         else:
             move = self.minimax(game)[0]
-        Engine.run(self, game, move)
+        return Engine.run(self, game, move)
 
     @abstractmethod
     def evaluate(self, game):

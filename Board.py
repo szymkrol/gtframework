@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from Player import Player
 from typing import Any, Self
+from collections.abc import Hashable
 
 
 class Board(ABC):
@@ -122,4 +123,9 @@ class Board(ABC):
     def is_there_a_victory(self) -> tuple[False, None] | tuple[True, Player]:
         """If there is any non-standard victory condition, it should return whether the game has finished and which
          player has won; otherwise it should return tuple(False, None)"""
+        pass
+
+    @abstractmethod
+    def get_state_repr(self) -> Hashable:
+        """Returns a hashable representation of current board state."""
         pass
