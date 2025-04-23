@@ -8,10 +8,10 @@ from copy import deepcopy
 
 
 class TicBoard(Board):
-    def generate_empty_board(self):
+    def generate_empty_board(self) -> list[list[str]]:
         return [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
 
-    def get_available_moves(self):
+    def get_available_moves(self) -> list[tuple[int, int]]:
         available_moves = []
         for i, row in enumerate(self.get_current_state()["board_state"]):
             for j, cell in enumerate(row):
@@ -19,7 +19,7 @@ class TicBoard(Board):
                     available_moves.append((i, j))
         return available_moves
 
-    def change_board(self, move):
+    def change_board(self, move: tuple[int, int]) -> None:
         i, j = move
         player = self.get_current_state()["player_to_move"]
         if player == self.get_players()[0]:
@@ -52,17 +52,16 @@ class TicBoard(Board):
                     return True, player
         else:
             return False, None
-"""
+
 class Minmax_v2(Minmax):
     def evaluate(self,game):
-
         if game.is_finished()[1] is None:
             return 0
-        elif game.is_finished()[1] == self.player:
-            return 1
+        elif game.is_finished()[1].get_id() == self.player:
+            return 100
         else:
-            return -1
-"""
+            return -50
+
 
 player1 = Player(1,'X')
 player2 = Player(2,'O')
@@ -70,7 +69,7 @@ depth = 10
 prun = True
 my_board = TicBoard(player1, player2)
 my_game = Game(my_board)
-my_engine = Minmax(depth,prun,player2)
+my_engine = Minmax_v2(depth,prun,player2)
 while not my_game.is_finished()[0]:
     print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
     board = my_game.get_board_state()
