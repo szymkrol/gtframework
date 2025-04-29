@@ -62,7 +62,7 @@ class Minmax_v2(Minmax):
     def evaluate(self, game):
         if game.is_finished()[1] is None:
             return 0
-        elif game.is_finished()[1].get_id() == self.player:
+        elif game.is_finished()[1] == self.player:
             return 100
         else:
             return -50
