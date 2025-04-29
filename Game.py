@@ -62,9 +62,9 @@ class Game:
         """
         Function returns whether the game has finished according to standard game condition.
 
-        If the game has finished returns also the player who has lost.
+        If the game has finished returns also the player who has won.
         :return: tuple with first element being a boolean value whether the game has ended and the second is
-                 the player to have lost (if game not finished the player is None).
+                 the player to have won (if game not finished the player is None).
         """
         is_victory, winner = self._board.is_there_a_victory()
         if self._board.get_available_moves() and not is_victory:
