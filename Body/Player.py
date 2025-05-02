@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 from typing import Any
+
 
 class Player:
     def __init__(self, id: int, attributes: Any=None) -> None:

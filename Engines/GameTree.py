@@ -1,6 +1,7 @@
 import math
 from typing import Self, Any
-from Game import Game
+
+from Body.Game import Game
 
 
 class TreeNode:

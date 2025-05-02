@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from Player import Player
 from typing import Any, Self
 from collections.abc import Hashable
+
+from Body.Player import Player
 
 
 class Board(ABC):

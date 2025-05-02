@@ -1,10 +1,11 @@
-from Engine import Engine
-from typing import Any
-from Game import Game
-from Board import Board
-from Player import Player
 import random
 import pickle
+from typing import Any
+
+from Engines.Engine import Engine
+from Body.Game import Game
+from Body.Board import Board
+from Body.Player import Player
 
 
 class QLearningEngine(Engine):

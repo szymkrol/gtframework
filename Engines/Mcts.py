@@ -1,10 +1,11 @@
-from Engine import Engine
-from Game import Game
-from GameTree import GameTree, TreeNode
 from typing import Any
 import random
 import time
-from Player import Player
+
+from Engines.Engine import Engine
+from Body.Game import Game
+from Engines.GameTree import GameTree, TreeNode
+from Body.Player import Player
 
 
 class Mcts(Engine):

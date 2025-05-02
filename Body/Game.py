@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
-
-from Board import Board
-from Player import Player
 from typing import Any, Self
 from collections.abc import Hashable
+
+from Body.Board import Board
+from Body.Player import Player
 
 
 class Game:

@@ -1,8 +1,8 @@
 from collections.abc import Hashable
 from itertools import chain
 
-from Player import Player
-from Board import Board
+from Body.Player import Player
+from Body.Board import Board
 
 
 class TicBoard(Board):

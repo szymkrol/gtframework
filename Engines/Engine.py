@@ -1,4 +1,4 @@
-from Game import Game
+from Body.Game import Game
 
 
 class Engine:

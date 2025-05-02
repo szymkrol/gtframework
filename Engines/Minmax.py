@@ -2,10 +2,11 @@ from abc import abstractmethod
 import math
 import random
 from typing import Any
-from Engine import Engine
-from Game import Game
-from Player import Player
 from copy import deepcopy
+
+from Engines.Engine import Engine
+from Body.Game import Game
+from Body.Player import Player
 
 
 class Minmax(Engine):

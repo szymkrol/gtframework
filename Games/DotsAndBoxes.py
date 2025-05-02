@@ -1,15 +1,9 @@
-import random
-
-from Player import Player
-from Board import Board
-from Game import Game
-from Mcts import Mcts
-from Lattice import LatticeNode, Lattice, get_neigh_coords
-from typing import Any
-from RandEng import RandEng
-from Minmax import Minmax
 from collections.abc import Hashable
-from itertools import chain
+from typing import Any
+
+from Body.Player import Player
+from Body.Board import Board
+from Games.Lattice import Lattice
 
 
 class DotsAndBoxes(Board):
@@ -77,34 +71,3 @@ class DotsAndBoxes(Board):
 
     def __str__(self) -> str:
         return self.get_current_state()["board_state"].__str__() + str(self.get_state_attr())
-
-
-class DotMax(Minmax):
-    def evaluate(self, game: Game) -> int:
-        return -game.get_board().get_score()
-
-
-player1 = Player(1, "MCTS")
-player2 = Player(2, "MINIMAX")
-my_board = DotsAndBoxes(player1, player2, 5)
-my_game = Game(my_board)
-my_mcts = Mcts(1000, 10, remember_past=False, const=2.5)
-my_minimax = DotMax(3, True, player2)
-my_randEng = RandEng()
-
-while not my_game.is_finished()[0]:
-    print(my_game)
-    if my_game.get_current_player() == player1:
-        print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
-
-        # i = int(input())
-        # j = int(input())
-        # x = (i, j)
-        #
-        # i = int(input())
-        # j = int(input())
-        # my_game.move((x, (i, j)))
-        my_mcts.run(my_game)
-    else:
-        print(f"It is now turn of: {my_game.get_current_player().get_attributes()}")
-        my_minimax.run(my_game)

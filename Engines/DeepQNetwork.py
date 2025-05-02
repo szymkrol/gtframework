@@ -1,19 +1,17 @@
 from abc import ABC, abstractmethod
+from collections import deque, namedtuple
+import math
+import random
+from typing import Any
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from collections import deque, namedtuple
-
-import math
-import random
-from typing import Any
-
-from Engine import Engine
-from Game import Game
-from Board import Board
-from Player import Player
+from Engines.Engine import Engine
+from Body.Game import Game
+from Body.Board import Board
+from Body.Player import Player
 
 Experience = namedtuple('Experience',
                         ('state', 'action', 'next_state', 'reward', 'done'))
@@ -246,7 +244,7 @@ class DQNEngine(Engine, ABC):
 
         print("\nTrening DQN zakończony.")
         # Zapisz model po treningu
-        self.save_model(f"dqn_policy_net.pth")
+        self.save_model(f"../Examples/dqn_policy_net.pth")
 
     @abstractmethod
     def get_tensor_repr(self, state_repr):
