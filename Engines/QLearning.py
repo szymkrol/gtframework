@@ -1,6 +1,6 @@
 import random
 import pickle
-from typing import Any
+from typing import Any, Hashable
 
 from Engines.Engine import Engine
 from Body.Game import Game
@@ -15,10 +15,10 @@ class QLearningEngine(Engine):
         self._gamma = gamma
         self._epsilon = epsilon
 
-    def get_q_value(self, state: Any, action: Any) -> float:
+    def get_q_value(self, state: Hashable, action: Hashable) -> float:
         return self._q_table.get(state, {}).get(action, .0)
 
-    def choose_action(self, state, available_moves):
+    def choose_action(self, state: Any, available_moves: list) -> Any:
         if random.uniform(0, 1) < self._epsilon:
             action = random.choice(available_moves)
         else:
@@ -30,7 +30,7 @@ class QLearningEngine(Engine):
             action = random.choice(best_moves)
         return action
 
-    def learn(self, state, action, reward, next_state, next_available_moves):
+    def learn(self, state: Hashable, action: Hashable, reward: float, next_state: Hashable, next_available_moves: list) -> None:
         if state not in self._q_table:
             self._q_table[state] = {}
 
@@ -45,12 +45,12 @@ class QLearningEngine(Engine):
 
         self._q_table[state][action] = new_q
 
-    def save_q_table(self, filename="q_table.pkl"):
+    def save_q_table(self, filename="q_table.pkl") -> None:
         with open(filename, 'wb') as f:
             pickle.dump(self._q_table, f)
         print(f"Tabela Q zapisana do {filename}")
 
-    def load_q_table(self, filename="q_table.pkl"):
+    def load_q_table(self, filename="q_table.pkl") -> None:
         try:
             with open(filename, 'rb') as f:
                 self._q_table = pickle.load(f)
@@ -59,7 +59,7 @@ class QLearningEngine(Engine):
             print(f"Nie znaleziono pliku {filename}. Inicjalizuję pustą tabelę Q.")
             self._q_table = {}
 
-    def train(self, opponent: Engine, num_episodes: int, GameClass: type[Game], game_config: dict[str: Any], BoardClass: type[Board], board_config: dict[str: Any], player: Player = None):
+    def train(self, opponent: Engine, num_episodes: int, GameClass: type[Game], game_config: dict[str: Any], BoardClass: type[Board], board_config: dict[str: Any], player: Player = None) -> None:
         wins = 0
         losses = 0
         draws = 0
@@ -96,7 +96,7 @@ class QLearningEngine(Engine):
                         reward = 0
                     self.learn(prev_state, prev_action, reward, game.get_state_repr(), game.get_available_moves())
 
-            if game.get_current_player() != player:  # Gra się skończyła ruchem agenta
+            if game.get_current_player() != player:
                 prev_state, prev_action = last_move
                 is_finished, winner = game.is_finished()
                 if winner is None:

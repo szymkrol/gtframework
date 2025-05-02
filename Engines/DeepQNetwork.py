@@ -18,17 +18,17 @@ Experience = namedtuple('Experience',
 
 
 class ReplayMemory:
-    """Prosta implementacja bufora pamięci powtórek."""
+    """Simple implementation of replay memory."""
 
     def __init__(self, capacity):
         self.memory = deque([], maxlen=capacity)
 
     def push(self, *args):
-        """Zapisuje przejście."""
+        """Save a transition."""
         self.memory.append(Experience(*args))
 
     def sample(self, batch_size):
-        """Pobiera losową próbkę przejść."""
+        """Get a random batch of experiences."""
         return random.sample(self.memory, batch_size)
 
     def __len__(self):
